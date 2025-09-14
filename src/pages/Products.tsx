@@ -20,12 +20,25 @@ import {
   List
 } from "lucide-react";
 import { products, categories, getProductsByCategory } from "@/data/products";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Products = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("featured");
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(product);
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   // Filter and sort products
   let filteredProducts = getProductsByCategory(selectedCategory);
@@ -248,6 +261,7 @@ const Products = () => {
 
                       {/* Add to Cart Button */}
                       <Button
+                        onClick={(e) => handleAddToCart(product, e)}
                         className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" />

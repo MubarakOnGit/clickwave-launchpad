@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ChevronLeft, ChevronRight, Star, ShoppingCart, Heart } from "lucide-react";
 import { Product } from "@/data/products";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCarouselProps {
   products: Product[];
@@ -14,6 +16,17 @@ interface ProductCarouselProps {
 const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
+  const { addItem } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = (product: Product, e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(product);
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   useEffect(() => {
     const updateItemsPerView = () => {
@@ -163,6 +176,7 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
 
                     {/* Add to Cart Button */}
                     <Button
+                      onClick={(e) => handleAddToCart(product, e)}
                       className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
                     >
                       <ShoppingCart className="w-4 h-4 mr-2" />

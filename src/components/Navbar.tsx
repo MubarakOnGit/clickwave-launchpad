@@ -1,11 +1,13 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ShoppingBag, Users, Info } from "lucide-react";
+import CartDrawer from "./CartDrawer";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const navItems = [
     { name: "Home", path: "/", icon: null },
@@ -13,6 +15,10 @@ const Navbar = () => {
     { name: "Partner With Us", path: "/partner", icon: Users },
     { name: "About", path: "/about", icon: Info },
   ];
+
+  const handleGetStarted = () => {
+    navigate("/partner");
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
@@ -47,9 +53,11 @@ const Navbar = () => {
             })}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden md:block">
+          {/* Cart and CTA */}
+          <div className="hidden md:flex items-center space-x-4">
+            <CartDrawer />
             <Button
+              onClick={handleGetStarted}
               variant="default"
               className="bg-gradient-primary hover:shadow-glow transition-all duration-300"
             >
@@ -88,10 +96,15 @@ const Navbar = () => {
                   </Link>
                 );
               })}
-              <div className="px-4 pt-2">
+              <div className="px-4 pt-2 flex items-center space-x-4">
+                <CartDrawer />
                 <Button
+                  onClick={() => {
+                    handleGetStarted();
+                    setIsOpen(false);
+                  }}
                   variant="default"
-                  className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                  className="flex-1 bg-gradient-primary hover:shadow-glow transition-all duration-300"
                 >
                   Get Started
                 </Button>

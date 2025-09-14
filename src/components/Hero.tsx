@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Zap, Users, TrendingUp } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background with Gradient Overlay */}
@@ -52,6 +54,7 @@ const Hero = () => {
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-fade-up delay-400">
             <Button
               size="lg"
+              onClick={() => navigate("/products")}
               className="bg-white text-primary hover:bg-white/90 hover:shadow-strong transform hover-lift font-semibold px-8 py-4 rounded-xl"
             >
               Explore Products
@@ -60,10 +63,11 @@ const Hero = () => {
             <Button
               variant="outline"
               size="lg"
+              onClick={() => navigate("/about")}
               className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-8 py-4 rounded-xl"
             >
               <Play className="mr-2 w-5 h-5" />
-              Watch Demo
+              Learn More
             </Button>
           </div>
 
