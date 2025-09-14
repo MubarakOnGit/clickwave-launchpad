@@ -1,3 +1,8 @@
+import headphonesImg from "@/assets/product-headphones.jpg";
+import smartwatchImg from "@/assets/product-smartwatch.jpg";
+import laptopImg from "@/assets/product-laptop.jpg";
+import smartphoneImg from "@/assets/product-smartphone.jpg";
+
 export interface Product {
   id: string;
   name: string;
@@ -20,7 +25,7 @@ export const products: Product[] = [
     description: "Experience crystal-clear audio with our premium wireless headphones featuring active noise cancellation and 30-hour battery life.",
     price: 299,
     originalPrice: 399,
-    image: "/src/assets/product-headphones.jpg",
+    image: headphonesImg,
     category: "Audio",
     rating: 4.8,
     reviews: 1247,
@@ -34,7 +39,7 @@ export const products: Product[] = [
     description: "Track your fitness goals with our advanced smartwatch featuring heart rate monitoring, GPS, and 7-day battery life.",
     price: 249,
     originalPrice: 349,
-    image: "/src/assets/product-smartwatch.jpg",
+    image: smartwatchImg,
     category: "Wearables",
     rating: 4.6,
     reviews: 892,
@@ -48,7 +53,7 @@ export const products: Product[] = [
     description: "Powerful performance in an ultra-thin design. Perfect for professionals who need portability without compromising on performance.",
     price: 1299,
     originalPrice: 1599,
-    image: "/src/assets/product-laptop.jpg",
+    image: laptopImg,
     category: "Computers",
     rating: 4.9,
     reviews: 563,
@@ -62,7 +67,7 @@ export const products: Product[] = [
     description: "Experience the future with our flagship smartphone featuring 5G connectivity, triple camera system, and all-day battery.",
     price: 899,
     originalPrice: 1099,
-    image: "/src/assets/product-smartphone.jpg",
+    image: smartphoneImg,
     category: "Mobile",
     rating: 4.7,
     reviews: 2103,
