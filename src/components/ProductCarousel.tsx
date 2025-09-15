@@ -95,59 +95,64 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
           </div>
 
           {/* Product Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {visibleProducts.map((product) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            {visibleProducts.map((product, index) => (
               <Card 
                 key={product.id} 
-                className="group hover-lift cursor-pointer border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-strong"
+                className="group cursor-pointer border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:scale-105 hover:shadow-2xl rounded-3xl overflow-hidden"
+                style={{ animationDelay: `${index * 100}ms` }}
               >
                 <CardContent className="p-0">
                   {/* Product Image */}
-                  <div className="relative overflow-hidden rounded-t-lg">
+                  <div className="relative overflow-hidden">
                     <img
                       src={product.image}
                       alt={product.name}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
                     />
-                    {/* Badges */}
-                    <div className="absolute top-3 left-3 flex flex-col gap-1">
+                    {/* Enhanced Badges */}
+                    <div className="absolute top-4 left-4 flex flex-col gap-2">
                       {product.featured && (
-                        <Badge className="bg-accent text-accent-foreground">Featured</Badge>
+                        <Badge className="bg-gradient-primary text-white font-semibold px-3 py-1 rounded-full shadow-lg">
+                          Featured
+                        </Badge>
                       )}
                       {product.originalPrice && (
-                        <Badge variant="destructive">
+                        <Badge className="bg-destructive/90 text-white font-semibold px-3 py-1 rounded-full shadow-lg backdrop-blur-sm">
                           {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
                         </Badge>
                       )}
                     </div>
                     {/* Wishlist Button */}
-                    <div className="absolute top-3 right-3">
+                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                       <Button
                         size="icon"
                         variant="ghost"
-                        className="rounded-full bg-background/80 backdrop-blur-sm hover:bg-background"
+                        className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110 transition-all duration-300 shadow-lg"
                       >
-                        <Heart className="w-4 h-4" />
+                        <Heart className="w-4 h-4 text-muted-foreground hover:text-red-500 transition-colors duration-300" />
                       </Button>
                     </div>
+                    {/* Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                   </div>
 
                   {/* Product Info */}
-                  <div className="p-4">
-                    <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                  <div className="p-6">
+                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
                       {product.name}
                     </h3>
-                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
                       {product.description}
                     </p>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-1 mb-3">
+                    <div className="flex items-center gap-2 mb-4">
                       <div className="flex items-center">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-4 h-4 ${
+                            className={`w-4 h-4 transition-colors duration-300 ${
                               i < Math.floor(product.rating)
                                 ? "text-yellow-400 fill-current"
                                 : "text-muted-foreground/30"
@@ -155,15 +160,15 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
                           />
                         ))}
                       </div>
-                      <span className="text-sm text-muted-foreground">
+                      <span className="text-sm text-muted-foreground font-medium">
                         ({product.reviews})
                       </span>
                     </div>
 
                     {/* Price */}
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <span className="text-xl font-bold text-foreground">
+                    <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center gap-3">
+                        <span className="text-2xl font-bold text-foreground">
                           ${product.price}
                         </span>
                         {product.originalPrice && (
@@ -177,7 +182,7 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
                     {/* Add to Cart Button */}
                     <Button
                       onClick={(e) => handleAddToCart(product, e)}
-                      className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                      className="w-full bg-gradient-primary hover:shadow-xl transition-all duration-500 hover:scale-105 font-semibold py-3 rounded-2xl"
                     >
                       <ShoppingCart className="w-4 h-4 mr-2" />
                       Add to Cart

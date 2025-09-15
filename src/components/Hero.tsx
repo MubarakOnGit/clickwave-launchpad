@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Play, Zap, Users, TrendingUp } from "lucide-react";
+import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
 
@@ -10,7 +10,7 @@ const Hero = () => {
       {/* Background with Gradient Overlay */}
       <div className="absolute inset-0 hero-gradient"></div>
       <div
-        className="absolute inset-0 opacity-20"
+        className="absolute inset-0 opacity-15"
         style={{
           backgroundImage: `url(${heroImage})`,
           backgroundSize: "cover",
@@ -18,90 +18,62 @@ const Hero = () => {
         }}
       ></div>
 
-      {/* Floating 3D Elements */}
+      {/* Elegant Floating Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-20 left-10 w-20 h-20 bg-accent/20 rounded-full blur-xl animate-pulse"></div>
-        <div className="absolute top-1/4 right-20 w-32 h-32 bg-primary-light/20 rounded-full blur-2xl animate-glow"></div>
-        <div className="absolute bottom-1/4 left-1/4 w-16 h-16 bg-accent-light/30 rounded-full blur-lg animate-pulse delay-1000"></div>
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-[100px] animate-float"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-accent/10 to-primary/5 rounded-full blur-[100px] animate-float-delayed"></div>
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="text-center max-w-4xl mx-auto">
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2 mb-6 animate-fade-up">
-            <Zap className="w-4 h-4 text-accent" />
-            <span className="text-sm font-medium text-white">
-              #1 Marketing Partner for Growing Businesses
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-center max-w-5xl mx-auto">
+          {/* Premium Badge */}
+          <div className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-md rounded-full px-6 py-3 mb-8 border border-white/10 animate-slide-up">
+            <Sparkles className="w-4 h-4 text-accent animate-pulse" />
+            <span className="text-sm font-medium text-white/90 tracking-wide">
+              Premium Marketing Partnership
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 animate-fade-up delay-200">
-            We Turn Your
-            <span className="block gradient-text bg-gradient-to-r from-accent to-accent-light bg-clip-text text-transparent">
-              Products Into
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight animate-slide-up-delayed">
+            Transform Your
+            <span className="block bg-gradient-to-r from-accent via-primary to-accent-light bg-clip-text text-transparent animate-gradient">
+              Business Growth
             </span>
-            Market Leaders
           </h1>
 
-          {/* Subheadline */}
-          <p className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed animate-fade-up delay-300">
-            Click Wave partners with innovative companies to amplify their reach through strategic social media marketing and our cutting-edge marketplace platform.
+          {/* Refined Subheadline */}
+          <p className="text-xl md:text-2xl text-white/85 mb-12 max-w-3xl mx-auto leading-relaxed font-light animate-fade-in-up">
+            Strategic social media marketing and marketplace solutions that drive real results for ambitious companies.
           </p>
 
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12 animate-fade-up delay-400">
+          {/* Premium CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up-delayed">
             <Button
               size="lg"
               onClick={() => navigate("/products")}
-              className="bg-white text-primary hover:bg-white/90 hover:shadow-strong transform hover-lift font-semibold px-8 py-4 rounded-xl"
+              className="group bg-white text-primary hover:bg-white/95 font-semibold px-10 py-5 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:scale-105"
             >
-              Explore Products
-              <ArrowRight className="ml-2 w-5 h-5" />
+              <span>Explore Marketplace</span>
+              <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
             </Button>
             <Button
               variant="outline"
               size="lg"
-              onClick={() => navigate("/about")}
-              className="border-white/30 text-white hover:bg-white/10 backdrop-blur-sm font-semibold px-8 py-4 rounded-xl"
+              onClick={() => navigate("/partner")}
+              className="border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-md font-semibold px-10 py-5 rounded-2xl hover:border-white/40 transition-all duration-500"
             >
-              <Play className="mr-2 w-5 h-5" />
-              Learn More
+              Become a Partner
             </Button>
-          </div>
-
-          {/* Stats */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-2xl mx-auto animate-fade-up delay-500">
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Users className="w-6 h-6 text-accent mr-2" />
-                <span className="text-2xl font-bold text-white">500+</span>
-              </div>
-              <p className="text-white/80 text-sm">Partner Companies</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                <TrendingUp className="w-6 h-6 text-accent mr-2" />
-                <span className="text-2xl font-bold text-white">2M+</span>
-              </div>
-              <p className="text-white/80 text-sm">Products Sold</p>
-            </div>
-            <div className="text-center">
-              <div className="flex items-center justify-center mb-2">
-                <Zap className="w-6 h-6 text-accent mr-2" />
-                <span className="text-2xl font-bold text-white">98%</span>
-              </div>
-              <p className="text-white/80 text-sm">Success Rate</p>
-            </div>
           </div>
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-white/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-white/60 rounded-full mt-2 animate-pulse"></div>
+      {/* Elegant Scroll Indicator */}
+      <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
+        <div className="w-6 h-12 border-2 border-white/20 rounded-full flex justify-center animate-bounce">
+          <div className="w-1 h-4 bg-white/40 rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
     </section>
