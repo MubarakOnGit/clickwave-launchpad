@@ -1,81 +1,171 @@
-import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-
+import { useState, useEffect } from "react";
 
 const Hero = () => {
-  const navigate = useNavigate();
+  const phrases = [
+    "Business Growth",
+    "Digital Vision", 
+    "Market Dreams",
+    "Revenue Success",
+    "Brand Excellence",
+  ];
+  const [currentPhrase, setCurrentPhrase] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleExploreClick = () => {
+    console.log("Navigate to /products");
+  };
+
+  const handlePartnerClick = () => {
+    console.log("Navigate to /partner");
+  };
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       {/* Spline 3D Background */}
       <div className="absolute inset-0">
         <iframe
-          src='https://my.spline.design/nexbotrobotcharacterconcept-uxMPcaudnZiumbbj2e7tCwpN/'
-          title="3D Robot by Spline"
-          frameBorder='0'
-          width='100%'
-          height='100%'
+          src="https://my.spline.design/orb-1EPpvrEW6xrCO41E19RbQ91F/?controls=false"
+          title="3D Orb Background"
+          frameBorder="0"
+          width="100%"
+          height="100%"
           className="w-full h-full"
           loading="lazy"
-          aria-label="Interactive 3D background"
+          aria-label="Interactive 3D background with vertical rotation"
         />
       </div>
-      
-      {/* Subtle overlay for text readability */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] pointer-events-none"></div>
+
+      {/* Subtle Overlay for Contrast */}
+      <div className="absolute inset-0 bg-black/20 pointer-events-none"></div>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center max-w-5xl mx-auto">
           {/* Premium Badge */}
-          <div className="inline-flex items-center space-x-2 bg-white/5 backdrop-blur-md rounded-full px-6 py-3 mb-8 border border-white/10 animate-slide-up">
-            <Sparkles className="w-4 h-4 text-accent animate-pulse" />
-            <span className="text-sm font-medium text-white/90 tracking-wide">
+          <div className="inline-flex items-center space-x-2 bg-white/10 backdrop-blur-lg rounded-full px-6 py-2 mb-10 border border-white/20 animate-slide-up">
+            <Sparkles className="w-5 h-5 text-yellow-400 animate-pulse" />
+            <span className="text-sm font-semibold text-white tracking-wide uppercase">
               Premium Marketing Partnership
             </span>
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-5xl md:text-7xl lg:text-8xl font-black text-white mb-8 leading-tight animate-slide-up-delayed">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 leading-tight animate-slide-up-delayed tracking-tight font-sans">
             Transform Your
-            <span className="block bg-gradient-to-r from-accent via-primary to-accent-light bg-clip-text text-transparent animate-gradient">
-              Business Growth
+            <span
+              key={currentPhrase}
+              className="block bg-gradient-to-r from-blue-400 via-blue-600 to-cyan-400 bg-clip-text text-transparent animate-text-slide"
+            >
+              {phrases[currentPhrase]}
             </span>
           </h1>
 
-          {/* Refined Subheadline */}
-          <p className="text-xl md:text-2xl text-white/85 mb-12 max-w-3xl mx-auto leading-relaxed font-light animate-fade-in-up">
-            Strategic social media marketing and marketplace solutions that drive real results for ambitious companies.
+          {/* Subheadline */}
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-light animate-fade-in-up font-sans">
+            Elevate your brand with strategic social media marketing and marketplace solutions designed for measurable success.
           </p>
 
-          {/* Premium CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in-up-delayed">
-            <Button
-              size="lg"
-              onClick={() => navigate("/products")}
-              className="group bg-white text-primary hover:bg-white/95 font-semibold px-10 py-5 rounded-2xl shadow-xl hover:shadow-2xl transform transition-all duration-500 hover:scale-105"
+          {/* CTA Buttons - Frosted Glass Effect */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up-delayed">
+            <button
+              onClick={handleExploreClick}
+              className="group relative liquid-glass-primary text-white font-medium px-6 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 overflow-hidden"
+              aria-label="Explore our marketplace solutions"
             >
-              <span>Explore Marketplace</span>
-              <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={() => navigate("/partner")}
-              className="border-2 border-white/20 text-white hover:bg-white/10 backdrop-blur-md font-semibold px-10 py-5 rounded-2xl hover:border-white/40 transition-all duration-500"
+              <span className="relative z-20 flex items-center text-sm">
+                Explore Marketplace
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
+              </span>
+              <span className="absolute inset-0 liquid-shimmer"></span>
+              <span className="absolute inset-0 ripple-effect"></span>
+            </button>
+            
+            <button
+              onClick={handlePartnerClick}
+              className="group relative liquid-glass-secondary text-white font-medium px-6 py-3 rounded-xl shadow-lg transition-all duration-500 ease-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 overflow-hidden"
+              aria-label="Become a partner"
             >
-              Become a Partner
-            </Button>
+              <span className="relative z-20 text-sm">Become a Partner</span>
+              <span className="absolute inset-0 liquid-shimmer-outline"></span>
+              <span className="absolute inset-0 ripple-effect"></span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Elegant Scroll Indicator */}
+      {/* Scroll Indicator */}
       <div className="absolute bottom-10 left-1/2 transform -translate-x-1/2">
-        <div className="w-6 h-12 border-2 border-white/20 rounded-full flex justify-center animate-bounce">
-          <div className="w-1 h-4 bg-white/40 rounded-full mt-2 animate-pulse"></div>
+        <div className="w-6 h-12 border-2 border-white/30 rounded-full flex justify-center animate-bounce">
+          <div className="w-1 h-4 bg-white/50 rounded-full mt-2 animate-pulse"></div>
         </div>
       </div>
+
+      {/* CSS for Liquid Glass Effects and Animations */}
+      <style>{`
+        @keyframes textSlide {
+          0% { opacity: 0; transform: translateY(20px); }
+          10% { opacity: 1; transform: translateY(0); }
+          90% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-20px); }
+        }
+        .animate-text-slide { animation: textSlide 4s ease-in-out infinite; }
+
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(30px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.8s ease-out forwards; }
+        .animate-slide-up-delayed { animation: slideUp 1s ease-out 0.2s forwards; }
+        .animate-fade-in-up { animation: slideUp 1.2s ease-out 0.4s forwards; }
+        .animate-fade-in-up-delayed { animation: slideUp 1.4s ease-out 0.6s forwards; }
+
+        .font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+        /* Frosted Glass Buttons */
+        .liquid-glass-primary {
+          background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.25) 25%, rgba(29,78,216,0.3) 50%, rgba(37,99,235,0.25) 75%, rgba(59,130,246,0.15) 100%);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(0px);
+          border: 1px solid rgba(59,130,246,0.3);
+          box-shadow: 0 8px 32px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.1);
+        }
+        .liquid-glass-primary:hover {
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border-color: rgba(59,130,246,0.5);
+          box-shadow: 0 12px 40px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.1);
+        }
+
+        .liquid-glass-secondary {
+          background: linear-gradient(135deg, rgba(147,197,253,0.08) 0%, rgba(59,130,246,0.12) 25%, rgba(37,99,235,0.15) 50%, rgba(59,130,246,0.12) 75%, rgba(147,197,253,0.08) 100%);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(0px);
+          border: 1px solid rgba(147,197,253,0.2);
+          box-shadow: 0 8px 32px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(0,0,0,0.05);
+        }
+        .liquid-glass-secondary:hover {
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border-color: rgba(147,197,253,0.4);
+          box-shadow: 0 12px 40px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.05);
+        }
+
+        /* Shimmer & Ripple */
+        .liquid-shimmer { background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%); animation: liquidShimmer 3s ease-in-out infinite; }
+        .liquid-shimmer-outline { background: linear-gradient(45deg, transparent 30%, rgba(147,197,253,0.15) 50%, transparent 70%); animation: liquidShimmer 3s ease-in-out infinite 1.5s; }
+        @keyframes liquidShimmer { 0%,100% { transform: translateX(-100%) skewX(-15deg); opacity: 0; } 50% { transform: translateX(200%) skewX(-15deg); opacity: 1; } }
+
+        .ripple-effect { background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%); transform: scale(0); pointer-events: none; }
+        button:active .ripple-effect { animation: ripple 0.6s ease-out; }
+        @keyframes ripple { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
+      `}</style>
     </section>
   );
 };
