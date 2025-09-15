@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import heroImage from "@/assets/hero-image.jpg";
+import Spline from "@splinetool/react-spline";
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -9,18 +9,11 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Spline 3D Background */}
       <div className="absolute inset-0">
-        <iframe 
-          src='https://my.spline.design/r4xbot-5HJsN96hnCAlQdzLLl4OK9kR/' 
-          frameBorder='0' 
-          width='100%' 
-          height='100%'
-          className="w-full h-full"
-          loading="lazy"
-        />
+        <Spline scene="https://my.spline.design/r4xbot-5HJsN96hnCAlQdzLLl4OK9kR/" />
       </div>
       
       {/* Subtle overlay for text readability */}
-      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] pointer-events-none"></div>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 relative z-10">
