@@ -7,22 +7,20 @@ const Hero = () => {
   const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background with Gradient Overlay */}
-      <div className="absolute inset-0 hero-gradient"></div>
-      <div
-        className="absolute inset-0 opacity-15"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
-      ></div>
-
-      {/* Elegant Floating Elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-br from-primary/10 to-accent/10 rounded-full blur-[100px] animate-float"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gradient-to-tl from-accent/10 to-primary/5 rounded-full blur-[100px] animate-float-delayed"></div>
+      {/* Spline 3D Background */}
+      <div className="absolute inset-0">
+        <iframe 
+          src='https://my.spline.design/r4xbot-5HJsN96hnCAlQdzLLl4OK9kR/' 
+          frameBorder='0' 
+          width='100%' 
+          height='100%'
+          className="w-full h-full"
+          loading="lazy"
+        />
       </div>
+      
+      {/* Subtle overlay for text readability */}
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px]"></div>
 
       {/* Main Content */}
       <div className="container mx-auto px-6 relative z-10">
