@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Spline from "@splinetool/react-spline";
+
 
 const Hero = () => {
   const navigate = useNavigate();
@@ -9,7 +9,16 @@ const Hero = () => {
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Spline 3D Background */}
       <div className="absolute inset-0">
-        <Spline scene="https://my.spline.design/r4xbot-5HJsN96hnCAlQdzLLl4OK9kR/" />
+        <iframe
+          src='https://my.spline.design/nexbotrobotcharacterconcept-uxMPcaudnZiumbbj2e7tCwpN/'
+          title="3D Robot by Spline"
+          frameBorder='0'
+          width='100%'
+          height='100%'
+          className="w-full h-full"
+          loading="lazy"
+          aria-label="Interactive 3D background"
+        />
       </div>
       
       {/* Subtle overlay for text readability */}
