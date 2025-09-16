@@ -1,4 +1,4 @@
-import { ArrowRight, Sparkles } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import { useState, useEffect } from "react";
 
 const Hero = () => {
@@ -18,20 +18,12 @@ const Hero = () => {
     return () => clearInterval(interval);
   }, []);
 
-  const handleExploreClick = () => {
-    console.log("Navigate to /products");
-  };
-
-  const handlePartnerClick = () => {
-    console.log("Navigate to /partner");
-  };
-
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">
       {/* Spline 3D Background */}
       <div className="absolute inset-0">
         <iframe
-          src="https://my.spline.design/orb-1EPpvrEW6xrCO41E19RbQ91F/?controls=false"
+          src="https://my.spline.design/100followers-kY5QRygP2f9CK7VUStQBQcP1/?controls=false"
           title="3D Orb Background"
           frameBorder="0"
           width="100%"
@@ -66,37 +58,6 @@ const Hero = () => {
               {phrases[currentPhrase]}
             </span>
           </h1>
-
-          {/* Subheadline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto leading-relaxed font-light animate-fade-in-up font-sans">
-            Elevate your brand with strategic social media marketing and marketplace solutions designed for measurable success.
-          </p>
-
-          {/* CTA Buttons - Frosted Glass Effect */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-in-up-delayed">
-            <button
-              onClick={handleExploreClick}
-              className="group relative liquid-glass-primary text-white font-medium px-6 py-3 rounded-xl shadow-lg transform transition-all duration-500 ease-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 overflow-hidden"
-              aria-label="Explore our marketplace solutions"
-            >
-              <span className="relative z-20 flex items-center text-sm">
-                Explore Marketplace
-                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform duration-300" />
-              </span>
-              <span className="absolute inset-0 liquid-shimmer"></span>
-              <span className="absolute inset-0 ripple-effect"></span>
-            </button>
-            
-            <button
-              onClick={handlePartnerClick}
-              className="group relative liquid-glass-secondary text-white font-medium px-6 py-3 rounded-xl shadow-lg transition-all duration-500 ease-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 overflow-hidden"
-              aria-label="Become a partner"
-            >
-              <span className="relative z-20 text-sm">Become a Partner</span>
-              <span className="absolute inset-0 liquid-shimmer-outline"></span>
-              <span className="absolute inset-0 ripple-effect"></span>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -107,7 +68,7 @@ const Hero = () => {
         </div>
       </div>
 
-      {/* CSS for Liquid Glass Effects and Animations */}
+      {/* CSS for Animations */}
       <style>{`
         @keyframes textSlide {
           0% { opacity: 0; transform: translateY(20px); }
@@ -127,44 +88,6 @@ const Hero = () => {
         .animate-fade-in-up-delayed { animation: slideUp 1.4s ease-out 0.6s forwards; }
 
         .font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
-
-        /* Frosted Glass Buttons */
-        .liquid-glass-primary {
-          background: linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(37,99,235,0.25) 25%, rgba(29,78,216,0.3) 50%, rgba(37,99,235,0.25) 75%, rgba(59,130,246,0.15) 100%);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(0px);
-          border: 1px solid rgba(59,130,246,0.3);
-          box-shadow: 0 8px 32px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.1);
-        }
-        .liquid-glass-primary:hover {
-          backdrop-filter: blur(25px);
-          -webkit-backdrop-filter: blur(25px);
-          border-color: rgba(59,130,246,0.5);
-          box-shadow: 0 12px 40px rgba(59,130,246,0.25), inset 0 1px 0 rgba(255,255,255,0.15), inset 0 -1px 0 rgba(0,0,0,0.1);
-        }
-
-        .liquid-glass-secondary {
-          background: linear-gradient(135deg, rgba(147,197,253,0.08) 0%, rgba(59,130,246,0.12) 25%, rgba(37,99,235,0.15) 50%, rgba(59,130,246,0.12) 75%, rgba(147,197,253,0.08) 100%);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(0px);
-          border: 1px solid rgba(147,197,253,0.2);
-          box-shadow: 0 8px 32px rgba(59,130,246,0.1), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 -1px 0 rgba(0,0,0,0.05);
-        }
-        .liquid-glass-secondary:hover {
-          backdrop-filter: blur(25px);
-          -webkit-backdrop-filter: blur(25px);
-          border-color: rgba(147,197,253,0.4);
-          box-shadow: 0 12px 40px rgba(59,130,246,0.15), inset 0 1px 0 rgba(255,255,255,0.1), inset 0 -1px 0 rgba(0,0,0,0.05);
-        }
-
-        /* Shimmer & Ripple */
-        .liquid-shimmer { background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%); animation: liquidShimmer 3s ease-in-out infinite; }
-        .liquid-shimmer-outline { background: linear-gradient(45deg, transparent 30%, rgba(147,197,253,0.15) 50%, transparent 70%); animation: liquidShimmer 3s ease-in-out infinite 1.5s; }
-        @keyframes liquidShimmer { 0%,100% { transform: translateX(-100%) skewX(-15deg); opacity: 0; } 50% { transform: translateX(200%) skewX(-15deg); opacity: 1; } }
-
-        .ripple-effect { background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%); transform: scale(0); pointer-events: none; }
-        button:active .ripple-effect { animation: ripple 0.6s ease-out; }
-        @keyframes ripple { 0% { transform: scale(0); opacity: 1; } 100% { transform: scale(4); opacity: 0; } }
       `}</style>
     </section>
   );
