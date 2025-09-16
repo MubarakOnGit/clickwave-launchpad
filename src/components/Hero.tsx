@@ -1,5 +1,12 @@
-import { Sparkles } from "lucide-react";
+import { Sparkles, Star, ShoppingCart } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
+import { getFeaturedProducts } from "@/data/products";
+import { useCart } from "@/contexts/CartContext";
+import { useToast } from "@/hooks/use-toast";
 
 const Hero = () => {
   const phrases = [
@@ -10,6 +17,10 @@ const Hero = () => {
     "Brand Excellence",
   ];
   const [currentPhrase, setCurrentPhrase] = useState(0);
+  const navigate = useNavigate();
+  const { addItem } = useCart();
+  const { toast } = useToast();
+  const featuredProducts = getFeaturedProducts();
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -17,6 +28,15 @@ const Hero = () => {
     }, 4000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleAddToCart = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    addItem(product);
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">
@@ -89,6 +109,107 @@ const Hero = () => {
 
         .font-sans { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
       `}</style>
+
+      {/* Featured Products Section */}
+      <div className="relative z-10 bg-background/95 backdrop-blur-sm border-t border-border">
+        <div className="container mx-auto px-6 py-16">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
+              Featured Products
+            </h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Discover our handpicked selection of premium products
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {featuredProducts.map((product) => (
+              <Card 
+                key={product.id} 
+                className="group hover-lift cursor-pointer border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-strong"
+                onClick={() => navigate(`/product/${product.id}`)}
+              >
+                <CardContent className="p-0">
+                  <div className="relative overflow-hidden rounded-t-lg">
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 left-3 flex flex-col gap-1">
+                      <Badge className="bg-accent text-accent-foreground">Featured</Badge>
+                      {product.originalPrice && (
+                        <Badge variant="destructive">
+                          {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="p-6">
+                    <h3 className="font-semibold text-foreground mb-2 line-clamp-2">
+                      {product.name}
+                    </h3>
+                    <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                      {product.description}
+                    </p>
+                    
+                    <div className="flex items-center gap-1 mb-3">
+                      <div className="flex items-center">
+                        {[...Array(5)].map((_, i) => (
+                          <Star
+                            key={i}
+                            className={`w-4 h-4 ${
+                              i < Math.floor(product.rating)
+                                ? "text-yellow-400 fill-current"
+                                : "text-muted-foreground/30"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        ({product.reviews})
+                      </span>
+                    </div>
+                    
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        <span className="text-xl font-bold text-foreground">
+                          ${product.price}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-sm text-muted-foreground line-through">
+                            ${product.originalPrice}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <Button
+                      onClick={(e) => handleAddToCart(product, e)}
+                      className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                    >
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Add to Cart
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+          
+          <div className="text-center mt-12">
+            <Button
+              onClick={() => navigate("/products")}
+              variant="outline"
+              size="lg"
+              className="bg-background/80 backdrop-blur-sm hover:bg-background"
+            >
+              View All Products
+            </Button>
+          </div>
+        </div>
+      </div>
     </section>
   );
 };

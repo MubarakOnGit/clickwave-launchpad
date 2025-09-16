@@ -19,6 +19,7 @@ import {
   Grid3X3,
   List
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { products, categories, getProductsByCategory } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
@@ -28,6 +29,7 @@ const Products = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [sortBy, setSortBy] = useState("featured");
+  const navigate = useNavigate();
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -174,6 +176,7 @@ const Products = () => {
                 className={`group hover-lift cursor-pointer border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-strong ${
                   viewMode === "list" ? "flex flex-row overflow-hidden" : ""
                 }`}
+                onClick={() => navigate(`/product/${product.id}`)}
               >
                 <CardContent className={`p-0 ${viewMode === "list" ? "flex flex-row w-full" : ""}`}>
                   {/* Product Image */}
