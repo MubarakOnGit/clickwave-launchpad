@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ interface ProductCarouselProps {
 const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [itemsPerView, setItemsPerView] = useState(4);
+  const navigate = useNavigate();
   const { addItem } = useCart();
   const { toast } = useToast();
 
@@ -101,6 +103,7 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
                 key={product.id} 
                 className="group cursor-pointer border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:scale-105 hover:shadow-2xl rounded-3xl overflow-hidden"
                 style={{ animationDelay: `${index * 100}ms` }}
+                onClick={() => navigate(`/product/${product.id}`)}
               >
                 <CardContent className="p-0">
                   {/* Product Image */}
