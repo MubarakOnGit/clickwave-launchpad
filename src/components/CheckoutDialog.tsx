@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Wrapper } from "@googlemaps/react-wrapper";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -288,12 +287,10 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
               </p>
             </div>
             
-            <Wrapper apiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
-              <MapComponent 
-                onAddressSelect={setSelectedAddress}
-                selectedAddress={selectedAddress}
-              />
-            </Wrapper>
+            <MapComponent 
+              onAddressSelect={setSelectedAddress}
+              selectedAddress={selectedAddress}
+            />
             
             {selectedAddress && (
               <div className="p-4 bg-muted/50 rounded-lg">
