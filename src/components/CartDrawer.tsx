@@ -4,18 +4,12 @@ import { Badge } from "@/components/ui/badge";
 import { useCart } from "@/contexts/CartContext";
 import { ShoppingCart, Plus, Minus, X, CreditCard } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { CheckoutDialog } from "./CheckoutDialog";
 
 const CartDrawer = () => {
   const { state, updateQuantity, removeItem, clearCart, toggleCart, getTotalItems, getTotalPrice } = useCart();
   const { toast } = useToast();
 
-  const handleCheckout = () => {
-    toast({
-      title: "Checkout Successful!",
-      description: `Your order of ${getTotalItems()} items totaling $${getTotalPrice().toFixed(2)} has been placed.`,
-    });
-    clearCart();
-  };
 
   const totalItems = getTotalItems();
   const totalPrice = getTotalPrice();
@@ -114,14 +108,16 @@ const CartDrawer = () => {
                 </div>
                 
                 <div className="space-y-2">
-                  <Button
-                    onClick={handleCheckout}
-                    className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
-                    size="lg"
-                  >
-                    <CreditCard className="w-4 h-4 mr-2" />
-                    Checkout
-                  </Button>
+                  <CheckoutDialog>
+                    <Button
+                      className="w-full bg-gradient-primary hover:shadow-glow transition-all duration-300"
+                      size="lg"
+                      disabled={state.items.length === 0}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Checkout
+                    </Button>
+                  </CheckoutDialog>
                   <Button
                     variant="outline"
                     onClick={clearCart}
