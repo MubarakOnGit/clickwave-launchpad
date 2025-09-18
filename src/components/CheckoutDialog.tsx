@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { Wrapper } from "@googlemaps/react-wrapper";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,16 +35,7 @@ const MapComponent: React.FC<{
 }> = ({ onAddressSelect, selectedAddress }) => {
   const [map, setMap] = useState<google.maps.Map | null>(null);
   const [marker, setMarker] = useState<google.maps.Marker | null>(null);
-  const [autocomplete, setAutocomplete] = useState<google.maps.places.Autocomplete | null>(null);
-  const searchInputRef = useCallback((ref: HTMLInputElement | null) => {
-    if (ref && !autocomplete) {
-      const autoCompleteInstance = new google.maps.places.Autocomplete(ref, {
-        types: ['address'],
-        fields: ['place_id', 'geometry', 'name', 'formatted_address', 'address_components']
-      });
-      setAutocomplete(autoCompleteInstance);
-    }
-  }, [autocomplete]);
+  const [searchBox, setSearchBox] = useState<google.maps.places.SearchBox | null>(null);
 
   const mapOptions: google.maps.MapOptions = {
     zoom: 15,
@@ -160,10 +152,15 @@ const MapComponent: React.FC<{
     });
   }, [onAddressSelect, marker]);
 
-  useEffect(() => {
-    if (autocomplete && map) {
-      const handlePlaceChanged = () => {
-        const place = autocomplete.getPlace();
+  const onSearchBoxLoad = useCallback((searchBox: google.maps.places.SearchBox) => {
+    setSearchBox(searchBox);
+  }, []);
+
+  const onPlacesChanged = useCallback(() => {
+    if (searchBox && map) {
+      const places = searchBox.getPlaces();
+      if (places && places.length > 0) {
+        const place = places[0];
         if (place.geometry && place.geometry.location) {
           const lat = place.geometry.location.lat();
           const lng = place.geometry.location.lng();
@@ -176,15 +173,9 @@ const MapComponent: React.FC<{
             latLng: new google.maps.LatLng(lat, lng),
           });
         }
-      };
-
-      autocomplete.addListener("place_changed", handlePlaceChanged);
-      
-      return () => {
-        google.maps.event.clearInstanceListeners(autocomplete);
-      };
+      }
     }
-  }, [autocomplete, map]);
+  }, [searchBox, map]);
 
   return (
     <div className="relative h-96 w-full rounded-lg overflow-hidden border">
@@ -192,7 +183,13 @@ const MapComponent: React.FC<{
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            ref={searchInputRef}
+            ref={(ref) => {
+              if (ref && map) {
+                const searchBox = new google.maps.places.SearchBox(ref);
+                onSearchBoxLoad(searchBox);
+                searchBox.addListener("places_changed", onPlacesChanged);
+              }
+            }}
             placeholder="Search for an address..."
             className="pl-10 bg-white shadow-md"
           />
@@ -287,10 +284,12 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
               </p>
             </div>
             
-            <MapComponent 
-              onAddressSelect={setSelectedAddress}
-              selectedAddress={selectedAddress}
-            />
+            <Wrapper apiKey={GOOGLE_MAPS_API_KEY} libraries={["places"]}>
+              <MapComponent 
+                onAddressSelect={setSelectedAddress}
+                selectedAddress={selectedAddress}
+              />
+            </Wrapper>
             
             {selectedAddress && (
               <div className="p-4 bg-muted/50 rounded-lg">
