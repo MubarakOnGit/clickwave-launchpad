@@ -5,10 +5,28 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { User, MapPin, Phone, CreditCard, Banknote } from "lucide-react";
+import { User, MapPin, Phone, CreditCard, Banknote, Mail } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+
+const KERALA_DISTRICTS = [
+  "Kasaragod",
+  "Kannur", 
+  "Wayanad",
+  "Kozhikode",
+  "Malappuram",
+  "Palakkad",
+  "Thrissur",
+  "Ernakulam",
+  "Idukki",
+  "Kottayam",
+  "Alappuzha",
+  "Pathanamthitta",
+  "Kollam",
+  "Thiruvananthapuram"
+];
 
 interface CheckoutDialogProps {
   children: React.ReactNode;
@@ -16,7 +34,9 @@ interface CheckoutDialogProps {
 
 interface DeliveryInfo {
   fullName: string;
+  email: string;
   sonOf: string;
+  district: string;
   post: string;
   pincode: string;
   landmark: string;
@@ -30,7 +50,9 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
     fullName: "",
+    email: "",
     sonOf: "",
+    district: "",
     post: "",
     pincode: "",
     landmark: "",
@@ -53,7 +75,7 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
 
   const handleCheckout = async () => {
     const requiredFields = [
-      'fullName', 'sonOf', 'post', 'pincode', 'landmark', 
+      'fullName', 'email', 'sonOf', 'district', 'post', 'pincode', 'landmark', 
       'nearestLocation', 'contactNumber1', 'contactNumber2'
     ] as const;
 
@@ -81,7 +103,9 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
       setIsOpen(false);
       setDeliveryInfo({
         fullName: "",
+        email: "",
         sonOf: "",
+        district: "",
         post: "",
         pincode: "",
         landmark: "",
@@ -126,6 +150,22 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
                 </div>
 
                 <div className="space-y-2">
+                  <Label htmlFor="email">Email *</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input
+                      id="email"
+                      type="email"
+                      placeholder="Enter your email"
+                      value={deliveryInfo.email}
+                      onChange={(e) => updateDeliveryInfo('email', e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="sonOf">S/O, D/O *</Label>
                   <Input
                     id="sonOf"
@@ -134,6 +174,22 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
                     onChange={(e) => updateDeliveryInfo('sonOf', e.target.value)}
                     required
                   />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="district">District *</Label>
+                  <Select value={deliveryInfo.district} onValueChange={(value) => updateDeliveryInfo('district', value)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select your district" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {KERALA_DISTRICTS.map((district) => (
+                        <SelectItem key={district} value={district.toLowerCase()}>
+                          {district}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
