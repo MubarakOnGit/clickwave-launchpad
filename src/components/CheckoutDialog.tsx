@@ -7,9 +7,11 @@ import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { User, MapPin, Phone, CreditCard, Banknote, Mail } from "lucide-react";
+import { User, MapPin, Phone, CreditCard, Banknote, Mail, Copy, ExternalLink } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { createOrder, sendTrackingEmail } from "@/services/orderService";
+import { OrderItem, DeliveryInfo } from "@/types/order";
 
 const KERALA_DISTRICTS = [
   "Kasaragod",
@@ -32,34 +34,16 @@ interface CheckoutDialogProps {
   children: React.ReactNode;
 }
 
-interface DeliveryInfo {
-  fullName: string;
-  email: string;
-  sonOf: string;
-  district: string;
-  post: string;
-  pincode: string;
-  landmark: string;
-  nearestLocation: string;
-  contactNumber1: string;
-  contactNumber2: string;
-  additionalInfo: string;
-}
-
 export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [deliveryInfo, setDeliveryInfo] = useState<DeliveryInfo>({
-    fullName: "",
+    name: "",
     email: "",
-    sonOf: "",
+    phone: "",
+    alternatePhone: "",
+    address: "",
     district: "",
-    post: "",
     pincode: "",
-    landmark: "",
-    nearestLocation: "",
-    contactNumber1: "",
-    contactNumber2: "",
-    additionalInfo: "",
   });
   const [paymentMethod, setPaymentMethod] = useState("cod");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -74,17 +58,23 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
   };
 
   const handleCheckout = async () => {
-    const requiredFields = [
-      'fullName', 'email', 'sonOf', 'district', 'post', 'pincode', 'landmark', 
-      'nearestLocation', 'contactNumber1', 'contactNumber2'
-    ] as const;
+    // Validate required fields
+    const requiredFields = ['name', 'email', 'phone', 'address', 'district', 'pincode'];
+    for (const field of requiredFields) {
+      if (!deliveryInfo[field as keyof DeliveryInfo]?.trim()) {
+        toast({
+          title: "Validation Error",
+          description: `Please fill in ${field.charAt(0).toUpperCase() + field.slice(1)}`,
+          variant: "destructive",
+        });
+        return;
+      }
+    }
 
-    const missingFields = requiredFields.filter(field => !deliveryInfo[field].trim());
-
-    if (missingFields.length > 0) {
+    if (!paymentMethod) {
       toast({
-        title: "Required Fields Missing",
-        description: "Please fill in all required fields.",
+        title: "Validation Error",
+        description: "Please select a payment method",
         variant: "destructive",
       });
       return;
@@ -92,30 +82,84 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
 
     setIsProcessing(true);
 
-    // Simulate order processing
-    setTimeout(() => {
+    try {
+      // Convert cart items to order items
+      const orderItems: OrderItem[] = state.items.map(item => ({
+        productId: item.product.id,
+        productName: item.product.name,
+        price: item.product.price,
+        quantity: item.quantity,
+        image: item.product.image?.src || item.product.image || ''
+      }));
+
+      // Create order in Firebase
+      const trackingId = await createOrder(
+        orderItems,
+        deliveryInfo,
+        paymentMethod,
+        totalPrice
+      );
+
+      // Send tracking email
+      await sendTrackingEmail(deliveryInfo.email, trackingId, deliveryInfo.name);
+
+      // Generate tracking URL
+      const trackingUrl = `${window.location.origin}/track/${trackingId}`;
+
       toast({
-        title: "Order Placed Successfully!",
-        description: `Your order of $${totalPrice.toFixed(2)} will be delivered to ${deliveryInfo.fullName} at ${deliveryInfo.post}, ${deliveryInfo.pincode}`,
+        title: "Order placed successfully!",
+        description: (
+          <div className="space-y-2">
+            <p>Order ID: {trackingId}</p>
+            <p>Tracking email sent to {deliveryInfo.email}</p>
+            <div className="flex items-center gap-2 mt-2">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => {
+                  navigator.clipboard.writeText(trackingUrl);
+                  toast({ title: "Link copied!" });
+                }}
+              >
+                <Copy className="w-3 h-3 mr-1" />
+                Copy Link
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => window.open(trackingUrl, '_blank')}
+              >
+                <ExternalLink className="w-3 h-3 mr-1" />
+                Track Order
+              </Button>
+            </div>
+          </div>
+        ),
+        duration: 10000,
       });
       
       clearCart();
       setIsOpen(false);
       setDeliveryInfo({
-        fullName: "",
-        email: "",
-        sonOf: "",
-        district: "",
-        post: "",
-        pincode: "",
-        landmark: "",
-        nearestLocation: "",
-        contactNumber1: "",
-        contactNumber2: "",
-        additionalInfo: "",
+        name: '',
+        email: '',
+        phone: '',
+        alternatePhone: '',
+        address: '',
+        district: '',
+        pincode: ''
       });
+      setPaymentMethod('');
+    } catch (error) {
+      console.error('Order creation failed:', error);
+      toast({
+        title: "Order failed",
+        description: "There was an error processing your order. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsProcessing(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -139,12 +183,12 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
               
               <div className="grid grid-cols-1 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="fullName">Full Name *</Label>
+                  <Label htmlFor="name">Full Name *</Label>
                   <Input
-                    id="fullName"
+                    id="name"
                     placeholder="Enter your full name"
-                    value={deliveryInfo.fullName}
-                    onChange={(e) => updateDeliveryInfo('fullName', e.target.value)}
+                    value={deliveryInfo.name}
+                    onChange={(e) => updateDeliveryInfo('name', e.target.value)}
                     required
                   />
                 </div>
@@ -166,12 +210,44 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="sonOf">S/O, D/O *</Label>
-                  <Input
-                    id="sonOf"
-                    placeholder="Son of / Daughter of"
-                    value={deliveryInfo.sonOf}
-                    onChange={(e) => updateDeliveryInfo('sonOf', e.target.value)}
+                  <Label htmlFor="phone">Phone Number *</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      placeholder="Primary contact number"
+                      value={deliveryInfo.phone}
+                      onChange={(e) => updateDeliveryInfo('phone', e.target.value)}
+                      className="pl-10"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="alternatePhone">Alternate Phone</Label>
+                  <div className="relative">
+                    <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                    <Input
+                      id="alternatePhone"
+                      type="tel"
+                      placeholder="Alternative contact number"
+                      value={deliveryInfo.alternatePhone}
+                      onChange={(e) => updateDeliveryInfo('alternatePhone', e.target.value)}
+                      className="pl-10"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address">Address *</Label>
+                  <Textarea
+                    id="address"
+                    placeholder="Enter your complete address"
+                    value={deliveryInfo.address}
+                    onChange={(e) => updateDeliveryInfo('address', e.target.value)}
+                    rows={3}
                     required
                   />
                 </div>
@@ -184,7 +260,7 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
                     </SelectTrigger>
                     <SelectContent>
                       {KERALA_DISTRICTS.map((district) => (
-                        <SelectItem key={district} value={district.toLowerCase()}>
+                        <SelectItem key={district} value={district}>
                           {district}
                         </SelectItem>
                       ))}
@@ -192,94 +268,14 @@ export const CheckoutDialog: React.FC<CheckoutDialogProps> = ({ children }) => {
                   </Select>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="post">Post *</Label>
-                    <Input
-                      id="post"
-                      placeholder="Post Office"
-                      value={deliveryInfo.post}
-                      onChange={(e) => updateDeliveryInfo('post', e.target.value)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="pincode">Pincode *</Label>
-                    <Input
-                      id="pincode"
-                      placeholder="Enter pincode"
-                      value={deliveryInfo.pincode}
-                      onChange={(e) => updateDeliveryInfo('pincode', e.target.value)}
-                      required
-                    />
-                  </div>
-                </div>
-
                 <div className="space-y-2">
-                  <Label htmlFor="landmark">Landmark *</Label>
+                  <Label htmlFor="pincode">Pincode *</Label>
                   <Input
-                    id="landmark"
-                    placeholder="Near landmark"
-                    value={deliveryInfo.landmark}
-                    onChange={(e) => updateDeliveryInfo('landmark', e.target.value)}
+                    id="pincode"
+                    placeholder="Enter pincode"
+                    value={deliveryInfo.pincode}
+                    onChange={(e) => updateDeliveryInfo('pincode', e.target.value)}
                     required
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="nearestLocation">Nearest Location *</Label>
-                  <Input
-                    id="nearestLocation"
-                    placeholder="Nearest known location"
-                    value={deliveryInfo.nearestLocation}
-                    onChange={(e) => updateDeliveryInfo('nearestLocation', e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="contact1">Contact Number 1 *</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                      <Input
-                        id="contact1"
-                        type="tel"
-                        placeholder="Primary contact"
-                        value={deliveryInfo.contactNumber1}
-                        onChange={(e) => updateDeliveryInfo('contactNumber1', e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="contact2">Contact Number 2 *</Label>
-                    <div className="relative">
-                      <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-                      <Input
-                        id="contact2"
-                        type="tel"
-                        placeholder="Alternative contact"
-                        value={deliveryInfo.contactNumber2}
-                        onChange={(e) => updateDeliveryInfo('contactNumber2', e.target.value)}
-                        className="pl-10"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="additionalInfo">Additional Information (Optional)</Label>
-                  <Textarea
-                    id="additionalInfo"
-                    placeholder="Any additional delivery instructions..."
-                    value={deliveryInfo.additionalInfo}
-                    onChange={(e) => updateDeliveryInfo('additionalInfo', e.target.value)}
-                    rows={3}
                   />
                 </div>
               </div>

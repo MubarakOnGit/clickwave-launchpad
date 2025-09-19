@@ -50,7 +50,7 @@ const CartDrawer = () => {
                 {state.items.map((item) => (
                   <div key={item.product.id} className="flex items-center space-x-3 p-3 border border-border rounded-lg">
                     <img
-                      src={item.product.image}
+                      src={item.product.image?.src || item.product.image}
                       alt={item.product.name}
                       className="w-16 h-16 object-cover rounded-md"
                     />

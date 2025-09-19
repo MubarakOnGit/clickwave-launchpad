@@ -52,12 +52,6 @@ const ProductCard = ({
     });
   };
 
-  const getImageSrc = () => {
-    if (typeof image === 'string') return image;
-    if (image && typeof image === 'object' && 'src' in image) return image.src;
-    return '/placeholder-product.jpg';
-  };
-
   return (
     <figure
       className={cn(
@@ -69,7 +63,7 @@ const ProductCard = ({
     >
       <div className="relative mb-4 overflow-hidden rounded-lg">
         <img
-          src={getImageSrc()}
+          src={image?.src || image}
           alt={name}
           className="w-full h-36 object-cover hover:scale-105 transition-transform duration-300"
           onError={(e) => {

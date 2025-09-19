@@ -186,7 +186,7 @@ const Products = () => {
                       : "rounded-t-lg"
                   }`}>
                     <img
-                      src={product.image}
+                      src={product.image?.src || product.image}
                       alt={product.name}
                       className={`object-cover group-hover:scale-105 transition-transform duration-300 ${
                         viewMode === "list" ? "w-full h-full" : "w-full h-48"

@@ -9,7 +9,7 @@ export interface Product {
   description: string;
   price: number;
   originalPrice?: number;
-  image: string | { src: string }; // Updated to handle both strings and objects
+  image: any;
   category: string;
   rating: number;
   reviews: number;

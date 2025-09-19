@@ -89,7 +89,7 @@ const ProductDetail = () => {
           <div className="space-y-4">
             <div className="relative">
               <img
-                src={product.image}
+                src={product.image?.src || product.image}
                 alt={product.name}
                 className="w-full h-96 lg:h-[500px] object-cover rounded-lg"
               />
@@ -111,7 +111,7 @@ const ProductDetail = () => {
               {[...Array(4)].map((_, i) => (
                 <img
                   key={i}
-                  src={product.image}
+                  src={product.image?.src || product.image}
                   alt={`${product.name} view ${i + 1}`}
                   className={`w-full h-20 object-cover rounded cursor-pointer border-2 transition-colors ${
                     selectedImage === i ? "border-primary" : "border-border"
@@ -286,7 +286,7 @@ const ProductDetail = () => {
                   <CardContent className="p-0">
                     <div className="relative overflow-hidden rounded-t-lg">
                       <img
-                        src={relatedProduct.image}
+                        src={relatedProduct.image?.src || relatedProduct.image}
                         alt={relatedProduct.name}
                         className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                       />
