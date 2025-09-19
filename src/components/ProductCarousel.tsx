@@ -1,12 +1,13 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ChevronLeft, ChevronRight, Star, ShoppingCart, Heart } from "lucide-react";
+import { Star, ShoppingCart, Heart } from "lucide-react";
 import { Product } from "@/data/products";
 import { useCart } from "@/contexts/CartContext";
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
+import { Marquee } from "@/components/magicui/marquee";
+import { useMemo } from "react";
 
 interface ProductCarouselProps {
   products: Product[];
@@ -14,53 +15,125 @@ interface ProductCarouselProps {
   subtitle?: string;
 }
 
-const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [itemsPerView, setItemsPerView] = useState(4);
+// Shuffle array function (JSX-safe version)
+const shuffleArray = (array: any[]): any[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
+const ProductCard = ({
+  id,
+  name,
+  description,
+  image,
+  price,
+  originalPrice,
+  rating,
+  reviews,
+  featured,
+  category,
+  popular,
+  tags,
+}: Product) => {
   const navigate = useNavigate();
   const { addItem } = useCart();
   const { toast } = useToast();
 
-  const handleAddToCart = (product: Product, e: React.MouseEvent) => {
+  const handleAddToCart = (e: React.MouseEvent) => {
     e.stopPropagation();
-    addItem(product);
+    addItem({ id, name, description, image, price, originalPrice, rating, reviews, featured, category, popular, tags });
     toast({
       title: "Added to cart!",
-      description: `${product.name} has been added to your cart.`,
+      description: `${name} has been added to your cart.`,
     });
   };
 
-  useEffect(() => {
-    const updateItemsPerView = () => {
-      if (window.innerWidth < 640) setItemsPerView(1);
-      else if (window.innerWidth < 768) setItemsPerView(2);
-      else if (window.innerWidth < 1024) setItemsPerView(3);
-      else setItemsPerView(4);
-    };
-
-    updateItemsPerView();
-    window.addEventListener("resize", updateItemsPerView);
-    return () => window.removeEventListener("resize", updateItemsPerView);
-  }, []);
-
-  const nextSlide = () => {
-    setCurrentIndex((prev) => 
-      prev + itemsPerView >= products.length ? 0 : prev + 1
-    );
+  const getImageSrc = () => {
+    if (typeof image === 'string') return image;
+    if (image && typeof image === 'object' && 'src' in image) return image.src;
+    return '/placeholder-product.jpg';
   };
 
-  const prevSlide = () => {
-    setCurrentIndex((prev) => 
-      prev === 0 ? Math.max(0, products.length - itemsPerView) : prev - 1
-    );
-  };
+  return (
+    <figure
+      className={cn(
+        "relative w-72 cursor-pointer overflow-hidden rounded-xl border p-4",
+        "border-gray-950/[.1] bg-gray-950/[.01] hover:bg-gray-950/[.05]",
+        "dark:border-gray-50/[.1] dark:bg-gray-50/[.10] dark:hover:bg-gray-50/[.15]"
+      )}
+      onClick={() => navigate(`/product/${id}`)}
+    >
+      <div className="relative mb-4 overflow-hidden rounded-lg">
+        <img
+          src={getImageSrc()}
+          alt={name}
+          className="w-full h-36 object-cover hover:scale-105 transition-transform duration-300"
+          onError={(e) => {
+            e.currentTarget.src = '/placeholder-product.jpg';
+          }}
+        />
+        <div className="absolute top-2 left-2 flex flex-col gap-1">
+          {featured && (
+            <Badge className="bg-gradient-primary text-white">Featured</Badge>
+          )}
+          {originalPrice && (
+            <Badge variant="destructive">
+              {Math.round(((originalPrice - price) / originalPrice) * 100)}% OFF
+            </Badge>
+          )}
+        </div>
+        <Button
+          size="sm"
+          variant="ghost"
+          className="absolute top-2 right-2 h-8 w-8 rounded-full p-0"
+        >
+          <Heart className="h-4 w-4" />
+        </Button>
+      </div>
+      <h3 className="text-lg font-bold text-white mb-2">{name}</h3>
+      <p className="text-sm text-gray-300 mb-4 line-clamp-2">{description}</p>
+      <div className="flex items-center gap-2 mb-4">
+        <div className="flex">
+          {[...Array(5)].map((_, i) => (
+            <Star
+              key={i}
+              className={`h-4 w-4 ${i < Math.floor(rating) ? 'text-yellow-400 fill-current' : 'text-gray-400'}`}
+            />
+          ))}
+        </div>
+        <span className="text-sm text-gray-300">({reviews})</span>
+      </div>
+      <div className="flex items-center justify-between mb-4">
+        <div>
+          <span className="text-xl font-bold text-white">${price}</span>
+          {originalPrice && (
+            <span className="text-sm text-gray-400 line-through ml-2">${originalPrice}</span>
+          )}
+        </div>
+      </div>
+      <Button
+        onClick={handleAddToCart}
+        className="w-full bg-blue-600 hover:bg-blue-700 text-white"
+      >
+        <ShoppingCart className="w-4 h-4 mr-2" />
+        Add to Cart
+      </Button>
+    </figure>
+  );
+};
 
-  const visibleProducts = products.slice(currentIndex, currentIndex + itemsPerView);
+const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) => {
+  // Shuffle rows for different orders (upper and lower)
+  const shuffledFirstRow = useMemo(() => shuffleArray(products.slice(0, Math.ceil(products.length / 2))), [products]);
+  const shuffledSecondRow = useMemo(() => shuffleArray(products.slice(Math.ceil(products.length / 2))), [products]);
 
   return (
     <section className="py-16 bg-gradient-card">
       <div className="container mx-auto px-4">
-        {/* Header */}
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
             {title}
@@ -71,145 +144,20 @@ const ProductCarousel = ({ products, title, subtitle }: ProductCarouselProps) =>
             </p>
           )}
         </div>
-
-        {/* Carousel */}
-        <div className="relative">
-          {/* Navigation Buttons */}
-          <div className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={prevSlide}
-              className="rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-background hover:shadow-soft"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </Button>
-          </div>
-          <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={nextSlide}
-              className="rounded-full bg-background/80 backdrop-blur-sm border-border hover:bg-background hover:shadow-soft"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </Button>
-          </div>
-
-          {/* Product Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {visibleProducts.map((product, index) => (
-              <Card 
-                key={product.id} 
-                className="group cursor-pointer border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all duration-500 hover:scale-105 hover:shadow-2xl rounded-3xl overflow-hidden"
-                style={{ animationDelay: `${index * 100}ms` }}
-                onClick={() => navigate(`/product/${product.id}`)}
-              >
-                <CardContent className="p-0">
-                  {/* Product Image */}
-                  <div className="relative overflow-hidden">
-                    <img
-                      src={product.image}
-                      alt={product.name}
-                      className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
-                    />
-                    {/* Enhanced Badges */}
-                    <div className="absolute top-4 left-4 flex flex-col gap-2">
-                      {product.featured && (
-                        <Badge className="bg-gradient-primary text-white font-semibold px-3 py-1 rounded-full shadow-lg">
-                          Featured
-                        </Badge>
-                      )}
-                      {product.originalPrice && (
-                        <Badge className="bg-destructive/90 text-white font-semibold px-3 py-1 rounded-full shadow-lg backdrop-blur-sm">
-                          {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}% OFF
-                        </Badge>
-                      )}
-                    </div>
-                    {/* Wishlist Button */}
-                    <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="rounded-full bg-white/90 backdrop-blur-sm hover:bg-white hover:scale-110 transition-all duration-300 shadow-lg"
-                      >
-                        <Heart className="w-4 h-4 text-muted-foreground hover:text-red-500 transition-colors duration-300" />
-                      </Button>
-                    </div>
-                    {/* Overlay */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                  </div>
-
-                  {/* Product Info */}
-                  <div className="p-6">
-                    <h3 className="text-lg font-bold text-foreground mb-2 line-clamp-2 group-hover:text-primary transition-colors duration-300">
-                      {product.name}
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2 leading-relaxed">
-                      {product.description}
-                    </p>
-
-                    {/* Rating */}
-                    <div className="flex items-center gap-2 mb-4">
-                      <div className="flex items-center">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-4 h-4 transition-colors duration-300 ${
-                              i < Math.floor(product.rating)
-                                ? "text-yellow-400 fill-current"
-                                : "text-muted-foreground/30"
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-muted-foreground font-medium">
-                        ({product.reviews})
-                      </span>
-                    </div>
-
-                    {/* Price */}
-                    <div className="flex items-center justify-between mb-6">
-                      <div className="flex items-center gap-3">
-                        <span className="text-2xl font-bold text-foreground">
-                          ${product.price}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-sm text-muted-foreground line-through">
-                            ${product.originalPrice}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    {/* Add to Cart Button */}
-                    <Button
-                      onClick={(e) => handleAddToCart(product, e)}
-                      className="w-full bg-gradient-primary hover:shadow-xl transition-all duration-500 hover:scale-105 font-semibold py-3 rounded-2xl"
-                    >
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      Add to Cart
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
+        <div className="relative flex w-full flex-col items-center justify-center overflow-hidden">
+          <Marquee pauseOnHover className="[--duration:10s] gap-4"> {/* Faster: 10s */}
+            {shuffledFirstRow.map((product) => (
+              <ProductCard key={product.id} {...product} />
             ))}
-          </div>
-
-          {/* Dots Indicator */}
-          <div className="flex justify-center mt-8 gap-2">
-            {Array.from({ length: Math.ceil(products.length / itemsPerView) }).map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentIndex(index * itemsPerView)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                  Math.floor(currentIndex / itemsPerView) === index
-                    ? "bg-primary w-6"
-                    : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
-                }`}
-              />
+          </Marquee>
+          <div className="my-6" /> {/* Gap between rows: 1.5rem (24px) */}
+          <Marquee reverse pauseOnHover className="[--duration:10s] gap-4"> {/* Faster: 10s */}
+            {shuffledSecondRow.map((product) => (
+              <ProductCard key={product.id} {...product} />
             ))}
-          </div>
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-background"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-background"></div>
         </div>
       </div>
     </section>

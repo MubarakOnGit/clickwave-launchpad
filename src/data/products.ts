@@ -9,7 +9,7 @@ export interface Product {
   description: string;
   price: number;
   originalPrice?: number;
-  image: string;
+  image: string | { src: string }; // Updated to handle both strings and objects
   category: string;
   rating: number;
   reviews: number;
@@ -80,7 +80,7 @@ export const products: Product[] = [
 export const categories = [
   "All",
   "Audio",
-  "Wearables", 
+  "Wearables",
   "Computers",
   "Mobile",
   "Accessories"
@@ -88,5 +88,5 @@ export const categories = [
 
 export const getFeaturedProducts = () => products.filter(product => product.featured);
 export const getPopularProducts = () => products.filter(product => product.popular);
-export const getProductsByCategory = (category: string) => 
+export const getProductsByCategory = (category: string) =>
   category === "All" ? products : products.filter(product => product.category === category);

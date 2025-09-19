@@ -9,58 +9,58 @@
     /* Core Brand Colors */
     --background: 0 0% 100%;
     --foreground: 220 15% 25%;
-    
+
     /* Brand Primary - Deep Blue to Purple Gradient Base */
     --primary: 240 100% 60%;
     --primary-dark: 260 100% 45%;
     --primary-light: 220 100% 70%;
     --primary-foreground: 0 0% 100%;
-    
+
     /* Electric Accent Colors */
     --accent: 180 100% 50%;
     --accent-light: 180 100% 70%;
     --accent-foreground: 0 0% 100%;
-    
+
     /* Secondary Brand Colors */
     --secondary: 240 20% 98%;
     --secondary-foreground: 240 100% 60%;
-    
+
     /* Neutral System */
     --muted: 240 10% 96%;
     --muted-foreground: 220 15% 45%;
-    
+
     /* Card & Surface Colors */
     --card: 0 0% 100%;
     --card-foreground: 220 15% 25%;
-    
+
     /* Interactive Elements */
     --border: 240 15% 90%;
     --input: 240 15% 94%;
     --ring: 240 100% 60%;
-    
+
     /* Status Colors */
     --destructive: 0 85% 60%;
     --destructive-foreground: 0 0% 100%;
-    
+
     --success: 140 80% 45%;
     --success-foreground: 0 0% 100%;
-    
+
     /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary-dark)) 100%);
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary-light)) 0%, hsl(var(--primary)) 50%, hsl(var(--primary-dark)) 100%);
     --gradient-accent: linear-gradient(45deg, hsl(var(--accent)) 0%, hsl(var(--accent-light)) 100%);
     --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
-    
+
     /* Shadows & Effects */
     --shadow-soft: 0 4px 20px -2px hsl(var(--primary) / 0.1);
     --shadow-strong: 0 10px 40px -10px hsl(var(--primary) / 0.3);
     --shadow-glow: 0 0 40px hsl(var(--accent) / 0.3);
-    
+
     /* Border Radius */
     --radius: 1rem;
     --radius-lg: 1.5rem;
     --radius-xl: 2rem;
-    
+
     /* Animations */
     --animation-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     --animation-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -70,25 +70,29 @@
   .dark {
     --background: 220 25% 8%;
     --foreground: 0 0% 95%;
-    
+
     --primary: 240 100% 70%;
     --primary-dark: 260 100% 55%;
     --primary-light: 220 100% 80%;
-    
+
     --card: 220 25% 10%;
     --card-foreground: 0 0% 95%;
-    
+
     --secondary: 220 25% 12%;
     --secondary-foreground: 240 100% 70%;
-    
+
     --muted: 220 25% 14%;
     --muted-foreground: 220 15% 65%;
-    
+
     --border: 220 25% 18%;
     --input: 220 25% 16%;
-    
+
     --gradient-hero: linear-gradient(135deg, hsl(var(--primary-light)) 0%, hsl(var(--primary)) 50%, hsl(var(--primary-dark)) 100%);
     --gradient-card: linear-gradient(145deg, hsl(var(--card)) 0%, hsl(var(--secondary)) 100%);
+  }
+  .theme {
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
   }
 }
 
@@ -111,39 +115,39 @@
   .hero-gradient {
     background: var(--gradient-hero);
   }
-  
+
   .card-gradient {
     background: var(--gradient-card);
   }
-  
+
   /* 3D Transform Effects */
   .transform-3d {
     transform-style: preserve-3d;
     perspective: 1000px;
   }
-  
+
   .hover-lift {
     transition: transform var(--animation-smooth);
   }
-  
+
   .hover-lift:hover {
     transform: translateY(-8px) rotateX(5deg);
   }
-  
+
   /* Glow Effects */
   .glow-accent {
     box-shadow: var(--shadow-glow);
   }
-  
+
   /* Interactive Elements */
   .interactive-scale {
     transition: transform var(--animation-fast);
   }
-  
+
   .interactive-scale:hover {
     transform: scale(1.05);
   }
-  
+
   /* Gradient Text */
   .gradient-text {
     background: var(--gradient-primary);
@@ -158,11 +162,11 @@
   .animate-fade-up {
     animation: fadeUp var(--animation-smooth) ease-out;
   }
-  
+
   .animate-slide-in {
     animation: slideIn var(--animation-smooth) ease-out;
   }
-  
+
   .animate-glow {
     animation: glow 2s ease-in-out infinite alternate;
   }
@@ -239,4 +243,25 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+@keyframes marquee {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(calc(-100% / 4));
+  }
+}
+
+.animate-marquee {
+  animation: marquee var(--duration, 20s) linear infinite;
+}
+
+.animate-marquee-reverse {
+  animation: marquee var(--duration, 20s) linear infinite reverse;
+}
+
+.animate-marquee-pause:hover,
+.animate-marquee-pause.touched {
+  animation-play-state: paused;
 }

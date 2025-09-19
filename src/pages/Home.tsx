@@ -14,11 +14,21 @@ const Home = () => {
       <Hero />
       
       {/* Featured Products Carousel */}
-      <ProductCarousel
-        products={featuredProducts}
-        title="Featured Products"
-        subtitle="Discover our hand-picked selection of premium products"
-      />
+      {/* Featured Products - 3D CardSwap */}
+<section className="py-20 bg-gradient-to-b from-background to-muted/20 relative overflow-hidden">
+  <div className="absolute inset-0">
+    <div className="absolute top-0 left-1/4 w-64 h-64 bg-primary/5 rounded-full blur-[60px]"></div>
+    <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-accent/5 rounded-full blur-[80px]"></div>
+  </div>
+  
+  <div className="container mx-auto px-6 relative z-10">
+    <ProductCarousel
+      products={featuredProducts}
+      title="Featured Products"
+      subtitle="Discover our hand-picked selection of premium products"
+    />
+  </div>
+</section>
 
       {/* Clean Benefits Section */}
       <section className="py-20 bg-background">

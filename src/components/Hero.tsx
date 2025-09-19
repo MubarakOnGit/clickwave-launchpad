@@ -1,22 +1,16 @@
+"use client"; // Added for client-side rendering
+
 import { Sparkles } from "lucide-react";
-import { useState, useEffect } from "react";
+import { MorphingText } from "../components/magicui/morphing-text";
 
 const Hero = () => {
   const phrases = [
     "Business Growth",
-    "Digital Vision", 
+    "Digital Vision",
     "Market Dreams",
     "Revenue Success",
     "Brand Excellence",
   ];
-  const [currentPhrase, setCurrentPhrase] = useState(0);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentPhrase((prev) => (prev + 1) % phrases.length);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-b from-gray-900 to-black">
@@ -51,12 +45,10 @@ const Hero = () => {
           {/* Main Headline */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 leading-tight animate-slide-up-delayed tracking-tight font-sans">
             Transform Your
-            <span
-              key={currentPhrase}
-              className="block bg-gradient-to-r from-blue-400 via-blue-600 to-cyan-400 bg-clip-text text-transparent animate-text-slide"
-            >
-              {phrases[currentPhrase]}
-            </span>
+        <MorphingText
+  texts={phrases}
+  className="block text-blue-400 !text-4xl sm:!text-5xl md:!text-6xl lg:!text-7xl"
+/>
           </h1>
         </div>
       </div>
@@ -70,14 +62,6 @@ const Hero = () => {
 
       {/* CSS for Animations */}
       <style>{`
-        @keyframes textSlide {
-          0% { opacity: 0; transform: translateY(20px); }
-          10% { opacity: 1; transform: translateY(0); }
-          90% { opacity: 1; transform: translateY(0); }
-          100% { opacity: 0; transform: translateY(-20px); }
-        }
-        .animate-text-slide { animation: textSlide 4s ease-in-out infinite; }
-
         @keyframes slideUp {
           from { opacity: 0; transform: translateY(30px); }
           to { opacity: 1; transform: translateY(0); }
